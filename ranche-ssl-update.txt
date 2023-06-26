@@ -1,0 +1,24 @@
+sudo yum install openssl
+
+
+openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048
+
+openssl req -new -key private_key.pem -out csr.pem
+
+openssl req -new -x509 -key private_key.pem -out certificate.pem -days 365
+
+openssl x509 -in certificate.pem -text -noout
+
+
+###################################################################
+
+docker run  -d --privileged --restart=unless-stopped -p 80:80 -p 443:443 \
+-v /root/cert:/etc/rancher/ssl \
+rancher/rancher:latest
+
+#########################################################
+
+docker logs 1560962da5fa   2>&1 | grep "Bootstrap Password:"
+
+
+
